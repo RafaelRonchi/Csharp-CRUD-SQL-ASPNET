@@ -1,0 +1,115 @@
+﻿@page "/"
+@using BlazorApp.Service
+@using BlazorApp.Model
+
+@inject UserService Service
+
+<PageTitle>Home</PageTitle>
+
+<form>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="Id">Id:</label>
+        <input id="Id" type="number" @bind ="userFilter.Id" class="form-control" />
+    </div>
+
+    <div>
+        <label for="Name">Nome:</label>
+        <input id="Name" @bind="userFilter.Name" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="Company">Empresa:</label>
+        <input id="Company" @bind="userFilter.Company" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="PersonalPhone">Telefone pessoal:</label>
+        <input id="PersonalPhone" @bind="userFilter.PersonalPhone" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="WorkPhone">Telefone trabalho:</label>
+        <input id="WorkPhone" @bind="userFilter.WorkPhone" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="Emails">Emails:</label>
+        <input id="Emails" @bind="emailsInput" @bind:event="oninput" class="form-control" />
+        <small class="form-text text-muted">Separe os e-mails por vírgula.</small>
+    </div>
+
+    <button @onclick="FindUser" type="button" class="btn btn-secondary">Buscar</button>
+
+</form>
+
+
+@if (users != null && users.Any())
+{
+    <ul>
+        @foreach (var user in users)
+        {
+            <li>@user.Name - @user.Company - @user.PersonalPhone - @user.WorkPhone</li>
+            <ul>
+                @foreach (var email in user.Email)
+                {
+                    <li>@email</li>
+                }
+            </ul>
+        }
+    </ul>
+}
+else
+{
+    <p>Nenhum usuário encontrado.</p>
+}
+
+@code {
+    private List<User> users = new() { };
+    private User userFilter = new()
+        {
+            Company = "terste",
+            PersonalPhone = "teste",
+            Id = 1
+        };
+    private User userToCreate = new();
+    private string emailsInput = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FindUser();
+    }
+
+    private async Task FindUser()
+    {
+        if (emailsInput != null) userFilter.Email = emailsInput?.Split(',')?.Select(e => e.Trim()).ToList();
+
+        users = await Service.SearchUsersAsync(userFilter);
+    }
+
+    private async Task CreateUser()
+    {
+        var returnService = await Service.CreateUser(userToCreate);
+        userToCreate = new User();
+
+        Console.WriteLine(returnService);
+    }
+
+    private async Task UpdateUser()
+    {
+        var returnService = await Service.UpdateUser(userToCreate);
+        userToCreate = new User();
+
+        Console.WriteLine(returnService);
+    }
+
+    private async Task DeleteUser(int id)
+    {
+        var returnService = await Service.DeleteUser(id);
+
+        Console.WriteLine(returnService);
+    }
+}
+
