@@ -8,5 +8,6 @@ namespace Web_API_CRUD.Services.IServices
         Task<bool> UpdateUser(User user);
         Task<bool> DeleteUser(int id);
         Task<User?> GetUserByIdAsync(int id);
+        Task<List<User>> SearchUsersAsync(User filters);
     }
 }

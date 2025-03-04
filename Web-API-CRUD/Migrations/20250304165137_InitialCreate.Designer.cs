@@ -11,7 +11,7 @@ using Web_API_CRUD.Data;
 namespace Web_API_CRUD.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250303224712_InitialCreate")]
+    [Migration("20250304165137_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

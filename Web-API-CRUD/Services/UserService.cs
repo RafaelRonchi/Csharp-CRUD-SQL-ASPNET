@@ -1,4 +1,5 @@
-﻿using Web_API_CRUD.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Web_API_CRUD.Data;
 using Web_API_CRUD.Models;
 using Web_API_CRUD.Services.IServices;
 
@@ -62,6 +63,43 @@ public class UserService(DataContext dataContext) : IUserService
     {
         return await dataContext.Users
             .FindAsync(id);
+    }
+
+    public async Task<List<User>> SearchUsersAsync(User filters)
+    {
+        var query = dataContext.Users.AsQueryable();
+
+        if (filters.Id != 0)
+        {
+            query = query.Where(user => user.Id == filters.Id);
+        }
+
+        if (!string.IsNullOrEmpty(filters.Name))
+        {
+            query = query.Where(user => user.Name.Contains(filters.Name));
+        }
+
+        if (!string.IsNullOrEmpty(filters.Company))
+        {
+            query = query.Where(user => user.Company != null && user.Company.Contains(filters.Company));
+        }
+
+        if (filters.Email != null && filters.Email.Count > 0)
+        {
+            query = query.Where(user => user.Email != null && user.Email.Any(e => filters.Email.Contains(e)));            
+        }
+
+        if (!string.IsNullOrEmpty(filters.PersonalPhone))
+        {
+            query = query.Where(user => user.PersonalPhone != null && user.PersonalPhone.Contains(filters.PersonalPhone));
+        }
+        
+        if (!string.IsNullOrEmpty(filters.WorkPhone))
+        {
+            query = query.Where(user => user.WorkPhone != null && user.WorkPhone.Contains(filters.WorkPhone));
+        }
+        
+        return await query.ToListAsync();
     }
 
     private void UpdateUserVariables(User userToUpdate, User userUpdate)

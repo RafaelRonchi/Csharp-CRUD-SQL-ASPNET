@@ -3,7 +3,7 @@
     public class User
     {
         public int Id { get; set; }
-        public required string Name { get; set; }
+        public string Name { get; set; }
         public string? Company { get; set; }
         public List<string>? Email { get; set; }
         public string? PersonalPhone { get; set; }
@@ -18,14 +18,6 @@
             PersonalPhone = personalPhone;
             WorkPhone = workPhone;
         }
-
-        public User(string name, string? company, List<string>? email, string? personalPhone, string? workPhone)
-        {
-            Name = name;
-            Company = company;
-            Email = email;
-            PersonalPhone = personalPhone;
-            WorkPhone = workPhone;
-        }
+        
     }
 }
