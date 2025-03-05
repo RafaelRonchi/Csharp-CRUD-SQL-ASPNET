@@ -1,0 +1,74 @@
+﻿@page "/Cadastrar"
+@using BlazorApp.Service
+@using BlazorApp.Model
+
+@inject UserService Service
+
+<PageTitle>Cadastrar</PageTitle>
+
+<form>
+    <h3>Cadastrar</h3>
+
+    <div>
+        <label for="Name">Nome:</label>
+        <input id="Name" required @bind="userToCreate.Name" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="Company">Empresa:</label>
+        <input id="Company" @bind="userToCreate.Company" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="PersonalPhone">Telefone pessoal:</label>
+        <input id="PersonalPhone" @bind="userToCreate.PersonalPhone" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="WorkPhone">Telefone trabalho:</label>
+        <input id="WorkPhone" @bind="userToCreate.WorkPhone" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="Emails">Emails:</label>
+        <input id="Emails" @bind="emailsInputCreate" @bind:event="oninput" class="form-control" />
+        <small class="form-text text-muted">Separe os e-mails por vírgula.</small>
+    </div>
+
+    <button @onclick="CreateUser" type="button" class="btn btn-secondary">Cadastrar</button>
+
+</form>
+
+
+@code {
+
+
+    private User userToCreate = new();
+    private string emailsInputCreate = string.Empty;
+
+
+
+
+
+    private async Task CreateUser()
+    {
+        if (!string.IsNullOrWhiteSpace(emailsInputCreate))
+        {
+            userToCreate.Email = emailsInputCreate
+                .Split(',')
+                .Select(e => e.Trim())
+                .Where(e => !string.IsNullOrEmpty(e))
+                .ToList();
+        }
+        else
+        {
+            userToCreate.Email = null;
+        }
+
+        var returnService = await Service.CreateUser(userToCreate);
+        userToCreate = new User();
+
+        Console.WriteLine(returnService);
+    }
+}
+

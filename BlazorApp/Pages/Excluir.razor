@@ -1,0 +1,30 @@
+﻿@page "/Excluir"
+@using BlazorApp.Service
+@using BlazorApp.Model
+@inject UserService Service
+
+
+
+<form>
+    <h3>Deletar</h3>
+    <div>
+        <label for="Id">Id:</label>
+        <input id="Id" type="number" @bind="idToDelete" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <button @onclick="DeleteUser" type="button" class="btn btn-secondary">Deletar</button>
+
+</form>
+
+@code {
+
+    private int idToDelete = 0;
+
+    private async Task DeleteUser()
+    {
+        var returnService = await Service.DeleteUser(idToDelete);
+
+        Console.WriteLine(returnService);
+    }
+}
+

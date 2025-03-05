@@ -52,13 +52,13 @@
         {
             <li>
                 Id: @user.Id - Nome: @user.Name - Empresa: @user.Company - TelefonePessoal: @user.PersonalPhone - EmpresaTelefone: @user.WorkPhone - email:
-            @if (user.Email != null && user.Email.Count > 1)
-            {
-                @foreach (var email in user.Email)
+                @if (user.Email != null && user.Email.Count > 1)
                 {
-                    @email
+                    @foreach (var email in user.Email)
+                    {
+                        @email
+                    }
                 }
-            }
             </li>
 
         }
@@ -70,100 +70,12 @@ else
 }
 
 
-<form>
-    <h3>Cadastrar</h3>
-
-    <div>
-        <label for="Name">Nome:</label>
-        <input id="Name" required  @bind="userToCreate.Name" @bind:event="oninput" class="form-control" />
-    </div>
-
-    <div>
-        <label for="Company">Empresa:</label>
-        <input id="Company" @bind="userToCreate.Company" @bind:event="oninput" class="form-control" />
-    </div>
-
-    <div>
-        <label for="PersonalPhone">Telefone pessoal:</label>
-        <input id="PersonalPhone" @bind="userToCreate.PersonalPhone" @bind:event="oninput" class="form-control" />
-    </div>
-
-    <div>
-        <label for="WorkPhone">Telefone trabalho:</label>
-        <input id="WorkPhone" @bind="userToCreate.WorkPhone" @bind:event="oninput" class="form-control" />
-    </div>
-
-    <div>
-        <label for="Emails">Emails:</label>
-        <input id="Emails" @bind="emailsInputCreate" @bind:event="oninput" class="form-control" />
-        <small class="form-text text-muted">Separe os e-mails por vírgula.</small>
-    </div>
-
-    <button @onclick="CreateUser" type="button" class="btn btn-secondary">Cadastrar</button>
-
-</form>
-
-
-<form>
-    <h3>Alterar</h3>
-    <div>
-        <label for="Id">Id:</label>
-        <input id="Id" type="number" @bind="userToAlter.Id" @bind:event="oninput" class="form-control" />
-    </div>
-
-    <div>
-        <label for="Name">Nome:</label>
-        <input id="Name" required @bind="userToAlter.Name" @bind:event="oninput" class="form-control" />
-    </div>
-
-    <div>
-        <label for="Company">Empresa:</label>
-        <input id="Company" @bind="userToAlter.Company" @bind:event="oninput" class="form-control" />
-    </div>
-
-    <div>
-        <label for="PersonalPhone">Telefone pessoal:</label>
-        <input id="PersonalPhone" @bind="userToAlter.PersonalPhone" @bind:event="oninput" class="form-control" />
-    </div>
-
-    <div>
-        <label for="WorkPhone">Telefone trabalho:</label>
-        <input id="WorkPhone" @bind="userToAlter.WorkPhone" @bind:event="oninput" class="form-control" />
-    </div>
-
-    <div>
-        <label for="Emails">Emails:</label>
-        <input id="Emails" @bind="emailsInputAlter" @bind:event="oninput" class="form-control" />
-        <small class="form-text text-muted">Separe os e-mails por vírgula.</small>
-    </div>
-
-    <button @onclick="UpdateUser" type="button" class="btn btn-secondary">Alterar</button>
-
-</form>
-
-<form>
-    <h3>Alterar</h3>
-    <div>
-        <label for="Id">Id:</label>
-        <input id="Id" type="number" @bind="idToDelete" @bind:event="oninput" class="form-control" />
-    </div>
-
-    <button @onclick="DeleteUser" type="button" class="btn btn-secondary">Deletar</button>
-
-</form>
 
 @code {
     private List<User> users = new() { };
     private User userFilter = new();
     private string emailsInput = string.Empty;
 
-    private User userToCreate = new();
-    private string emailsInputCreate = string.Empty;
-
-    private User userToAlter = new();
-    private string emailsInputAlter = string.Empty;
-
-    private int idToDelete = 0;
 
 
     protected override async Task OnInitializedAsync()
@@ -188,53 +100,5 @@ else
         users = await Service.SearchUsersAsync(userFilter);
     }
 
-    private async Task CreateUser()
-    {
-        if (!string.IsNullOrWhiteSpace(emailsInputCreate))
-        {
-            userToCreate.Email = emailsInputCreate
-                .Split(',')
-                .Select(e => e.Trim())
-                .Where(e => !string.IsNullOrEmpty(e))
-                .ToList();
-        }
-        else
-        {
-            userToCreate.Email = null;
-        }
-
-        var returnService = await Service.CreateUser(userToCreate);
-        userToCreate = new User();
-
-        Console.WriteLine(returnService);
-    }
-
-    private async Task UpdateUser()
-    {
-        if (!string.IsNullOrWhiteSpace(emailsInputAlter))
-        {
-            userToAlter.Email = emailsInputAlter
-                .Split(',')
-                .Select(e => e.Trim())
-                .Where(e => !string.IsNullOrEmpty(e))
-                .ToList();
-        }
-        else
-        {
-            userToAlter.Email = null;
-        }
-
-        var returnService = await Service.UpdateUser(userToAlter);
-        userToCreate = new User();
-
-        Console.WriteLine(returnService);
-    }
-
-    private async Task DeleteUser()
-    {
-        var returnService = await Service.DeleteUser(idToDelete);
-
-        Console.WriteLine(returnService);
-    }
 }
 

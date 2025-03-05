@@ -1,0 +1,77 @@
+﻿@page "/Alterar"
+@using BlazorApp.Service
+@using BlazorApp.Model
+
+@inject UserService Service
+
+<PageTitle>Alterar</PageTitle>
+
+
+<form>
+    <h3>Alterar</h3>
+    <div>
+        <label for="Id">Id:</label>
+        <input id="Id" type="number" @bind="userToAlter.Id" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="Name">Nome:</label>
+        <input id="Name" required @bind="userToAlter.Name" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="Company">Empresa:</label>
+        <input id="Company" @bind="userToAlter.Company" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="PersonalPhone">Telefone pessoal:</label>
+        <input id="PersonalPhone" @bind="userToAlter.PersonalPhone" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="WorkPhone">Telefone trabalho:</label>
+        <input id="WorkPhone" @bind="userToAlter.WorkPhone" @bind:event="oninput" class="form-control" />
+    </div>
+
+    <div>
+        <label for="Emails">Emails:</label>
+        <input id="Emails" @bind="emailsInputAlter" @bind:event="oninput" class="form-control" />
+        <small class="form-text text-muted">Separe os e-mails por vírgula.</small>
+    </div>
+
+    <button @onclick="UpdateUser" type="button" class="btn btn-secondary">Alterar</button>
+
+</form>
+
+
+@code {
+
+    private User userToAlter = new();
+    private string emailsInputAlter = string.Empty;
+
+
+
+    private async Task UpdateUser()
+    {
+        if (!string.IsNullOrWhiteSpace(emailsInputAlter))
+        {
+            userToAlter.Email = emailsInputAlter
+                .Split(',')
+                .Select(e => e.Trim())
+                .Where(e => !string.IsNullOrEmpty(e))
+                .ToList();
+        }
+        else
+        {
+            userToAlter.Email = null;
+        }
+
+        var returnService = await Service.UpdateUser(userToAlter);
+        userToAlter = new User();
+
+        Console.WriteLine(returnService);
+    }
+
+}
+
