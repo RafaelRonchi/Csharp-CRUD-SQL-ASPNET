@@ -8,5 +8,10 @@
         public List<string> Email { get; set; }
         public string PersonalPhone { get; set; }
         public string WorkPhone { get; set; }
+
+        public User()
+        {
+            Email = new List<string>();
+        }
     }
 }

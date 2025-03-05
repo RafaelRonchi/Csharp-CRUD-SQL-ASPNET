@@ -60,7 +60,7 @@ namespace BlazorApp.Service
             {
                 var queryString = string.Empty;
 
-                if (filters.Id != null)
+                if (filters.Id != null && filters.Id != 0)
                     queryString += $"&id={filters.Id}";
                 if (!string.IsNullOrEmpty(filters.Name))
                     queryString += $"&name={filters.Name}";
